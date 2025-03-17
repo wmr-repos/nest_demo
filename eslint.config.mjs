@@ -27,9 +27,15 @@ export default tseslint.config(
   },
   {
     rules: {
+      'prettier/prettier': [
+        'error',
+        {
+          endOfLine: 'auto', // 或者 'crlf'，取决于你的项目需求
+        },
+      ],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn'
+      '@typescript-eslint/no-unsafe-argument': 'warn',
     },
   },
 );
