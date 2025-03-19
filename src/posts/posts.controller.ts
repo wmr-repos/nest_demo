@@ -45,7 +45,7 @@ export class PostsController {
    */
   @ApiOperation({ summary: '获取所有文章' })
   @Get()
-  async findAll(@Query() query): Promise<PostRo> {
+  async findAll(@Query() query) {
     return await this.postsService.findAll(query);
   }
 
@@ -57,13 +57,13 @@ export class PostsController {
 
   @ApiOperation({ summary: '根据id修改文章' })
   @Put(':id')
-  async update(@Param('id') id: number, @Body() post: Partial<PostsEntity>) {
+  async update(@Param('id') id: string, @Body() post: Partial<PostsEntity>) {
     return this.postsService.update(id, post);
   }
 
   @ApiOperation({ summary: '根据id删除文章' })
   @Delete(':id')
-  async remove(@Param('id') id: number) {
+  async remove(@Param('id') id: string) {
     return this.postsService.remove(id);
   }
 }

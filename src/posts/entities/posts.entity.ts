@@ -16,7 +16,7 @@ import { PostInfoDto } from '../dto/create-post.dot';
 // 文章实体
 @Entity('posts')
 export class PostsEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: string;
 
   // 文章标题
@@ -94,16 +94,20 @@ export class PostsEntity {
       ...this,
       isRecommend: this.isRecommend ? true : false,
     };
+
     if (this.category) {
       responseObj.category = this.category.name;
     }
+
     if (this.tags && this.tags.length) {
       responseObj.tags = this.tags.map((item) => item.name);
     }
+
     if (this.author && this.author.id) {
       responseObj.userId = this.author.id;
       responseObj.author = this.author.nickname || this.author.username;
     }
+
     return responseObj;
   }
 }

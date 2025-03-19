@@ -27,7 +27,7 @@ export class CreatePostDto {
 }
 
 export class PostInfoDto {
-  public id: number;
+  public id: string;
   public title: string;
   public content: string;
   public contentHtml: string;

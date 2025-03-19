@@ -43,7 +43,7 @@ export class PostsService {
     const postParam: Partial<PostsEntity> = {
       ...post,
       isRecommend: isRecommend ? 1 : 0,
-      category: categoryDoc,
+      category: categoryDoc ?? undefined,
       tags: tags,
       author: user,
     };
@@ -64,7 +64,7 @@ export class PostsService {
   }
 
   // 获取文章列表信息
-  async findAll(query): Promise<PostRo> {
+  async findAll(query: { pageNum: number; pageSize: number }) {
     const qb = this.postsRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.category', 'category')
@@ -75,26 +75,37 @@ export class PostsService {
     qb.orderBy('post.create_time', 'DESC');
 
     const count = await qb.getCount();
-    const { pageNum = 1, pageSize = 10, ...params } = query;
+    const { pageNum = 1, pageSize = 10 } = query;
     qb.limit(pageSize);
     qb.offset(pageSize * (pageNum - 1));
 
     const posts = await qb.getMany();
-    const result: PostInfoDto[] = posts.map((item) => item.toResponseObject());
+    const result = posts.map((item) => item.toResponseObject());
     return { list: result, count: count };
   }
 
   // 获取指定文章
-  async findById(id: number): Promise<PostsEntity> {
-    const post = await this.postsRepository.findOne({ where: { id } });
-    if (!post) {
-      throw new HttpException('文章不存在', 401);
+  async findById(id: number): Promise<PostInfoDto> {
+    const qb = this.postsRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.category', 'category')
+      .leftJoinAndSelect('post.tag', 'tag')
+      .leftJoinAndSelect('post.author', 'author')
+      .where('post.id=:id')
+      .setParameter('id', id);
+
+    const result = await qb.getOne();
+
+    if (!result) {
+      throw new HttpException(`id为${id}的文章不存在`, HttpStatus.BAD_REQUEST);
     }
-    return post;
+
+    await this.postsRepository.update(id, { count: result.count + 1 });
+    return result.toResponseObject();
   }
 
   // 更新文章
-  async update(id: number, post: Partial<PostsEntity>): Promise<PostsEntity> {
+  async update(id: string, post: Partial<PostsEntity>): Promise<PostsEntity> {
     const existPost = await this.postsRepository.findOne({ where: { id } });
 
     if (!existPost) {
@@ -107,7 +118,7 @@ export class PostsService {
   }
 
   // 删除文章
-  async remove(id: number) {
+  async remove(id: string) {
     const existPost = await this.postsRepository.findOne({ where: { id } });
 
     if (!existPost) {

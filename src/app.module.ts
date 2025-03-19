@@ -7,6 +7,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { TagModule } from './tag/tag.module';
+import { OssModule } from './oss/oss.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -35,8 +37,9 @@ import { TagModule } from './tag/tag.module';
     AuthModule,
     CategoryModule,
     TagModule,
+    OssModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [JwtService],
 })
 export class AppModule {}
