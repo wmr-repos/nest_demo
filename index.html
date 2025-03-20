@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /**
+       * 并发请求
+       * @param {string[]} urls 请求地址数组
+       * @param {number} maxNum 请求成功回调
+       */
+
+      function concurrentRequest(urls, maxNum) {
+        if (urls.length === 0) return Promise.resolve([]);
+        return new Promise((resolve) => {
+          let index = 0;
+          let result = [];
+          let count = 0;
+          async function _request() {
+            const i = index;
+            const url = urls[index];
+            index++;
+            try {
+              const res = await fetch(url);
+              result[i] = res;
+            } catch (e) {
+              console.error(e);
+              result[i] = e;
+            } finally {
+              count++;
+              if (count === urls.length) {
+                resolve(result);
+              }
+              if (index < urls.length) {
+                _request();
+              }
+            }
+          }
+
+          for (let i = 0; i < Math.min(urls.length, maxNum); i++) {
+            _request();
+          }
+        });
+      }
+      const urls = [];
+      for (let i = 0; i <= 20; i++) {
+        // urls.push(`https://picsum.photos/id/${i}/200/300`);
+        urls.push(`https://jsonplaceholder.typicode.com/posts/${i}`);
+      }
+      concurrentRequest(urls, 5).then((res) => {
+        console.log(res);
+      });
+    </script>
+  </body>
+</html>

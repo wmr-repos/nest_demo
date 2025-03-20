@@ -8,12 +8,11 @@ import { CategoryModule } from 'src/category/category.module';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
-  providers: [PostsService],
+  providers: [PostsService, JwtService],
   imports: [
     TypeOrmModule.forFeature([PostsEntity]),
     forwardRef(() => CategoryModule),
     forwardRef(() => TagModule),
-    JwtService,
   ],
   controllers: [PostsController],
 })
