@@ -13,7 +13,7 @@ export class TransformInterceptor implements NestInterceptor {
       map((data: Record<string, any>) => {
         return {
           data,
-          code: 0,
+          code: 200,
           message: 'success',
         };
       }),

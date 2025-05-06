@@ -4,7 +4,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { compareSync } from 'bcryptjs';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -19,17 +18,16 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(username: string, password: string): Promise<any> {
-    const user = await this.userRepository
+    const query = this.userRepository
       .createQueryBuilder('user')
-      .addSelect('user.password')
-      .where('user.username=:username', { username })
-      .getOne();
+      .where('user.username=:username', { username });
 
+    const user = await query.getOne();
     if (!user) {
       throw new BadRequestException('用户名不正确！');
     }
 
-    if (!compareSync(password, user.password)) {
+    if (password !== user.password) {
       throw new BadRequestException('密码错误！');
     }
     return user;

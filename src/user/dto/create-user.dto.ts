@@ -10,6 +10,7 @@ export class CreateUserDto {
   @IsNotEmpty({ message: '请输入密码' })
   readonly password: string;
 
-  @ApiProperty({ description: '用户角色' })
-  readonly role: string;
+  @ApiProperty({ description: '昵称' })
+  @IsNotEmpty({ message: '请输入昵称' })
+  readonly name: string;
 }

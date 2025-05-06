@@ -1,13 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostsModule } from './posts/posts.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import envConfig from '../config/env';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { CategoryModule } from './category/category.module';
-import { TagModule } from './tag/tag.module';
-import { OssModule } from './oss/oss.module';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
@@ -27,17 +23,13 @@ import { JwtService } from '@nestjs/jwt';
         port: configService.get<number>('DB_PORT', 3306),
         username: configService.get('DB_USERNAME', 'root'),
         password: configService.get('DB_PASSWORD', 'root'),
-        database: configService.get('DB_DATABASE', 'blog'),
+        database: configService.get('DB_DATABASE', 'quit'),
         timezone: '+08:00',
         synchronize: true,
       }),
     }),
-    PostsModule,
     UserModule,
     AuthModule,
-    CategoryModule,
-    TagModule,
-    OssModule,
   ],
   controllers: [],
   providers: [JwtService],

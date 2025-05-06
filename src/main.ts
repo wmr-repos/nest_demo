@@ -26,6 +26,15 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
+  // 启用全局 CORS
+  app.enableCors({
+    origin: true, // 允许所有来源
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // 允许的 HTTP 方法
+    preflightContinue: false,
+    optionsSuccessStatus: 204, // 预检请求成功的状态码
+    credentials: true, // 允许携带 cookie
+  });
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
 

@@ -14,41 +14,7 @@ export class UserService {
     // private snowflakeService: SnowflakeService,
   ) {}
 
-  async register(createUser: CreateUserDto) {
-    const { username } = createUser;
-
-    const existUser = await this.userRepository.findOne({
-      where: { username },
-    });
-
-    if (existUser) {
-      throw new HttpException('用户已存在', HttpStatus.BAD_REQUEST);
-    }
-
-    // const id = this.snowflakeService.generateId().toString();
-    // const newUser = this.userRepository.create({ ...createUser, id });
-
-    const newUser = this.userRepository.create({ ...createUser });
-    return await this.userRepository.save(newUser);
-  }
-
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  async findOne(id: string) {
+  async findOne(id: number) {
     return await this.userRepository.findOne({ where: { id } });
-  }
-
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
-  remove(id: string) {
-    return `This action removes a #${id} user`;
   }
 }
