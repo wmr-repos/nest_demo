@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
 import envConfig from '../config/env';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -19,7 +20,6 @@ import { PostuserModule } from './postuser/postuser.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        // entities: [PostsEntity],
         autoLoadEntities: true,
         host: configService.get('DB_HOST', 'localhost'),
         port: configService.get<number>('DB_PORT', 3306),
@@ -30,6 +30,7 @@ import { PostuserModule } from './postuser/postuser.module';
         synchronize: false,
       }),
     }),
+    MongooseModule.forRoot('mongodb://localhost:27017/quit'),
     UserModule,
     AuthModule,
     PostModule,

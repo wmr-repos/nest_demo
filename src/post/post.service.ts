@@ -5,12 +5,14 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { Post } from './entities/post.entity';
 import { QueryPostDto } from './dto/query-post.dto';
+import { PostContentService } from '../postuser/services/postcontent.service';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post)
     private postRepository: Repository<Post>,
+    private postContentService: PostContentService,
   ) {}
 
   create(createPostDto: CreatePostDto) {
@@ -84,8 +86,20 @@ export class PostService {
 
     const [posts, total] = await queryBuilder.getManyAndCount();
 
+    // 获取每个帖子的content
+    const postsWithContent = await Promise.all(
+      posts.map(async (post) => {
+        const content = await this.postContentService.getContentByPostId(post.id);
+        console.log(`Content for post ${post.id}:`, content);
+        return {
+          ...post,
+          content,
+        };
+      }),
+    );
+
     return {
-      list: posts,
+      list: postsWithContent,
       pagination: {
         total,
         page,
