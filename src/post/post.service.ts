@@ -31,7 +31,23 @@ export class PostService {
       sortOrder = 'DESC',
     } = query;
 
-    const queryBuilder = this.postRepository.createQueryBuilder('post');
+    const queryBuilder = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .select([
+        'post.id',
+        'post.title',
+        'post.checkstatus',
+        'post.hotstatus',
+        'post.createtime',
+        'post.commentcount',
+        'post.likes',
+        'post.readcount',
+        'user.id',
+        'user.name',
+        'user.username',
+        'user.avatar',
+      ]);
 
     // 添加精确匹配条件
     if (id) {
@@ -39,7 +55,7 @@ export class PostService {
     }
 
     if (name) {
-      queryBuilder.andWhere('post.name = :name', { name });
+      queryBuilder.andWhere('user.name LIKE :name', { name: `%${name}%` });
     }
 
     if (checkstatus !== undefined) {
@@ -53,7 +69,7 @@ export class PostService {
     // 添加模糊搜索条件
     if (keyword) {
       queryBuilder.andWhere(
-        '(post.title LIKE :keyword OR post.content LIKE :keyword)',
+        '(post.title LIKE :keyword OR user.name LIKE :keyword)',
         {
           keyword: `%${keyword}%`,
         },
@@ -80,7 +96,10 @@ export class PostService {
   }
 
   async findOne(id: number) {
-    const post = await this.postRepository.findOneBy({ id });
+    const post = await this.postRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
     if (!post) {
       throw new NotFoundException(`Post with ID ${id} not found`);
     }

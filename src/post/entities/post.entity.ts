@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { PostUser } from '../../postuser/entities/postuser.entity';
 
 @Entity('discusspost')
 export class Post {
@@ -7,6 +14,10 @@ export class Post {
 
   @Column()
   userid: number;
+
+  @ManyToOne(() => PostUser)
+  @JoinColumn({ name: 'userid' })
+  user: PostUser;
 
   @Column()
   title: string;
