@@ -27,7 +27,7 @@ import { PostuserModule } from './postuser/postuser.module';
         password: configService.get('DB_PASSWORD', 'root'),
         database: configService.get('DB_DATABASE', 'quit'),
         timezone: '+08:00',
-        synchronize: true,
+        synchronize: false,
       }),
     }),
     UserModule,
