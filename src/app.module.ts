@@ -5,6 +5,7 @@ import envConfig from '../config/env';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JwtService } from '@nestjs/jwt';
     }),
     UserModule,
     AuthModule,
+    PostModule,
   ],
   controllers: [],
   providers: [JwtService],
