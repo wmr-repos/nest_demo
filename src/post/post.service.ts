@@ -90,7 +90,6 @@ export class PostService {
     const postsWithContent = await Promise.all(
       posts.map(async (post) => {
         const content = await this.postContentService.getContentByPostId(post.id);
-        console.log(`Content for post ${post.id}:`, content);
         return {
           ...post,
           content,

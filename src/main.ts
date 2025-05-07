@@ -28,11 +28,20 @@ async function bootstrap() {
 
   // 启用全局 CORS
   app.enableCors({
-    origin: true, // 允许所有来源
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // 允许的 HTTP 方法
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    // allowedHeaders: [
+    //   'Content-Type',
+    //   'Authorization',
+    //   'Accept',
+    //   'Origin',
+    //   'X-Requested-With',
+    // ],
+    // exposedHeaders: ['Authorization'],
+    credentials: true,
     preflightContinue: false,
-    optionsSuccessStatus: 204, // 预检请求成功的状态码
-    credentials: true, // 允许携带 cookie
+    optionsSuccessStatus: 204,
+    maxAge: 3600, // 预检请求缓存时间，单位秒
   });
 
   const document = SwaggerModule.createDocument(app, config);
